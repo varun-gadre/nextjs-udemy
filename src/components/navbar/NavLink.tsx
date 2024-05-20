@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { NavbarItem } from '@nextui-org/react';
 import Link from 'next/link';
