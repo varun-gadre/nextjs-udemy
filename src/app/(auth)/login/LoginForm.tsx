@@ -1,22 +1,34 @@
 'use client';
+import { signInUser } from '@/app/actions/authActions';
 import { LoginSchema, loginSchema } from '@/lib/schemas/LoginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Card, CardBody, CardHeader, Input } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { GiPadlock } from 'react-icons/gi';
 
 export default function LoginForm() {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: { errors, isValid, isSubmitting },
     } = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
         mode: 'onTouched',
     });
-    const onSubmit = (data: LoginSchema) => {
-        console.log(data);
+    const onSubmit = async (data: LoginSchema) => {
+
+        const result = await signInUser(data);
+        console.log("Got auth result", result);
+
+        if (result.status === 'success') {
+            router.push('/members');
+        } else {
+            console.log(result.error);
+        }
+
     };
     return (
         <Card className='mx-auto w-2/5'>
@@ -52,6 +64,7 @@ export default function LoginForm() {
                             errorMessage={errors.password?.message as string}
                         />
                         <Button
+                            isLoading={isSubmitting}
                             fullWidth
                             isDisabled={!isValid}
                             color='secondary'
