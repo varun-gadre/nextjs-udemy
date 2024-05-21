@@ -9,6 +9,14 @@ import { getUserByEmail } from './app/actions/authActions';
 import bcrypt from 'bcryptjs';
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
+    callbacks: {
+        async session({ token, session }) {
+            if (token.sub && session.user) {
+                session.userId = token.sub;
+            }
+            return session;
+        },
+    },
     adapter: PrismaAdapter(prisma),
     providers: [
         credentials({

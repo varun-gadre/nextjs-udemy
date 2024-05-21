@@ -1,6 +1,6 @@
 'use server';
 
-import { signIn } from '@/auth';
+import { signIn, signOut } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { LoginSchema } from '@/lib/schemas/LoginSchema';
 import { RegisterSchema, registerSchema } from '@/lib/schemas/RegisterSchema';
@@ -36,6 +36,9 @@ export async function signInUser(
     }
 }
 
+export async function logoutUser() {
+    await signOut({ redirectTo: '/login' });
+}
 export async function registerUser(
     data: RegisterSchema
 ): Promise<ActionResult<User>> {
